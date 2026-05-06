@@ -1,0 +1,27 @@
+services:
+  # Backend Service
+  - type: web
+    name: traveltech-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: traveltech-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: traveltech-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: traveltech-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: traveltech-db
+    plan: free
+    postgresMajorVersion: 15
