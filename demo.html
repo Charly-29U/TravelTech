@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelTech - Demo</title>
+    <link rel="stylesheet" href="frontend/src/styles.css">
+    <style>
+        body { padding-top: 50px; }
+        .demo-container { max-width: 900px; margin: 0 auto; }
+        .hidden { display: none; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-primary); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .spinner { width: 50px; height: 50px; border: 5px solid var(--glass-border); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Itinerary Styles */
+        .detail-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; }
+        .header-stats { display: flex; gap: 1rem; }
+        .stat-card { padding: 1rem 2rem; min-width: 150px; }
+        .timeline { display: flex; flex-direction: column; gap: 1.5rem; }
+        .timeline-item { display: flex; gap: 1.5rem; }
+        .timeline-marker { display: flex; flex-direction: column; align-items: center; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-primary); box-shadow: 0 0 10px var(--accent-primary); }
+        .line { width: 2px; flex-grow: 1; background: var(--glass-border); margin: 4px 0; }
+        .timeline-content { flex-grow: 1; padding: 1.25rem; transition: transform 0.2s; }
+        .segment-meta { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: var(--accent-secondary); margin-bottom: 1rem; text-transform: uppercase; }
+        .segment-main { display: flex; justify-content: space-between; align-items: center; }
+        .location-group { display: flex; align-items: center; gap: 2rem; }
+        .city { font-size: 1.125rem; font-weight: 700; display: block; }
+        .time { font-size: 0.875rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Planner View -->
+        <div id="plannerView">
+            <header style="margin-bottom: 3rem;">
+                <h1 style="color: var(--accent-primary);">Optimize Itinerary</h1>
+                <p style="color: var(--text-secondary);">Plan your multi-city corporate trip using our global optimization engine.</p>
+            </header>
+
+            <div class="glass-card">
+                <div class="form-group">
+                    <label>Origin City</label>
+                    <select id="origin">
+                        <option>New York, USA</option>
+                        <option>London, UK</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Destinations</label>
+                    <div id="destinationsList">
+                        <input type="text" value="London, UK" style="margin-bottom: 0.5rem;" disabled>
+                        <input type="text" value="Dubai, UAE" style="margin-bottom: 0.5rem;" disabled>
+                        <input type="text" value="Tokyo, Japan" style="margin-bottom: 0.5rem;" disabled>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Budget (USD)</label>
+                        <input type="number" value="5000">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Optimization Strategy</label>
+                        <select>
+                            <option>Balanced Approach</option>
+                            <option>Minimize Cost</option>
+                            <option>Minimize Time</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;" onclick="runOptimization()">
+                    Calculate Best Route
+                </button>
+            </div>
+        </div>
+
+        <!-- Result View -->
+        <div id="resultView" class="hidden">
+            <header class="detail-header">
+                <div>
+                    <h1 id="resultTitle">Trip to Tokyo</h1>
+                    <span class="badge badge-success">OPTIMAL</span>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-card glass-card">
+                        <span class="label">Total Cost</span>
+                        <span class="value">$2,450.50</span>
+                    </div>
+                    <div class="stat-card glass-card">
+                        <span class="label">Total Time</span>
+                        <span class="value">18.5h</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="timeline">
+                <!-- Segment 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"><div class="dot"></div><div class="line"></div></div>
+                    <div class="timeline-content glass-card">
+                        <div class="segment-meta"><span>LONG_FLIGHT</span><span>5,570 km</span></div>
+                        <div class="segment-main">
+                            <div class="location-group">
+                                <div class="location"><span class="city">New York</span><span class="time">May 10, 08:00</span></div>
+                                <div style="color: var(--glass-border);">→</div>
+                                <div class="location"><span class="city">London</span><span class="time">May 10, 20:30</span></div>
+                            </div>
+                            <div style="font-size: 1.25rem; font-weight: 700;">$850.00</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Segment 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"><div class="dot"></div><div class="line"></div></div>
+                    <div class="timeline-content glass-card">
+                        <div class="segment-meta"><span>LONG_FLIGHT</span><span>5,470 km</span></div>
+                        <div class="segment-main">
+                            <div class="location-group">
+                                <div class="location"><span class="city">London</span><span class="time">May 11, 09:00</span></div>
+                                <div style="color: var(--glass-border);">→</div>
+                                <div class="location"><span class="city">Dubai</span><span class="time">May 11, 20:00</span></div>
+                            </div>
+                            <div style="font-size: 1.25rem; font-weight: 700;">$720.00</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Segment 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"><div class="dot"></div></div>
+                    <div class="timeline-content glass-card">
+                        <div class="segment-meta"><span>LONG_FLIGHT</span><span>7,930 km</span></div>
+                        <div class="segment-main">
+                            <div class="location-group">
+                                <div class="location"><span class="city">Dubai</span><span class="time">May 12, 10:00</span></div>
+                                <div style="color: var(--glass-border);">→</div>
+                                <div class="location"><span class="city">Tokyo</span><span class="time">May 13, 01:00</span></div>
+                            </div>
+                            <div style="font-size: 1.25rem; font-weight: 700;">$880.50</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" style="margin-top: 2rem; border: 1px solid var(--glass-border); color: var(--text-secondary);" onclick="location.reload()">
+                Start New Optimization
+            </button>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loader" class="loading-overlay hidden">
+            <div class="spinner"></div>
+            <p>TravelTech Engine is calculating distances...</p>
+        </div>
+    </div>
+
+    <script>
+        function runOptimization() {
+            document.getElementById('loader').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('plannerView').classList.add('hidden');
+                document.getElementById('resultView').classList.remove('hidden');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

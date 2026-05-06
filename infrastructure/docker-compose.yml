@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: traveltech-db
+    environment:
+      POSTGRES_USER: traveltech
+      POSTGRES_PASSWORD: secure123
+      POSTGRES_DB: traveltech_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-cities.sql:/docker-entrypoint-initdb.d/init-cities.sql
+
+  backend:
+    build: 
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: traveltech-api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/traveltech_db
+      SPRING_DATASOURCE_USERNAME: traveltech
+      SPRING_DATASOURCE_PASSWORD: secure123
+      JWT_SECRET: supersecretkey777traveltechsaasglobal2026
+    depends_on:
+      - db
