@@ -1,6 +1,8 @@
 spring:
   application:
     name: traveltech-api
+  server:
+    port: ${PORT:8080}
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/traveltech_db}
     username: ${SPRING_DATASOURCE_USERNAME:traveltech}
