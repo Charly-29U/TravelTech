@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of, tap, catchError, map } from 'rxjs';
 import { City, CityService } from './city.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { City, CityService } from './city.service';
 export class ItineraryService {
   private http = inject(HttpClient);
   private cityService = inject(CityService);
-  private apiUrl = '/api/v1/itineraries';
+  private apiUrl = `${environment.apiUrl}/itineraries`;
   
   private cities: City[] = [];
   private lastItinerarySubject = new BehaviorSubject<any>(null);

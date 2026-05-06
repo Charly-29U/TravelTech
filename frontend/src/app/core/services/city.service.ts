@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, of, catchError } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 export interface City {
   id: number;
   name: string;
@@ -16,7 +18,7 @@ export interface City {
 })
 export class CityService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/v1/cities';
+  private apiUrl = `${environment.apiUrl}/cities`;
 
   getCities(): Observable<City[]> {
     const mockCities: City[] = [

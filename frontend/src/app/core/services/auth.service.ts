@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
 import { Router } from '@angular/router';
 
+import { environment } from '../../../environments/environment';
+
 export interface AuthResponse {
   token: string;
   email: string;
@@ -16,7 +18,7 @@ export interface AuthResponse {
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = '/api/v1/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
   
   private userSubject = new BehaviorSubject<AuthResponse | null>(null);
   public user$ = this.userSubject.asObservable();
