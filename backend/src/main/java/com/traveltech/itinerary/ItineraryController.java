@@ -24,9 +24,13 @@ public class ItineraryController {
             @RequestBody ItineraryRequest request,
             @AuthenticationPrincipal User user
     ) {
+        java.util.List<String> destinationNames = request.getDestinations().stream()
+                .map(com.traveltech.dto.DestinationRequest::getCity)
+                .toList();
+
         Itinerary itinerary = itineraryService.createItinerary(
                 request.getOrigin(),
-                request.getDestinations(),
+                destinationNames,
                 request.getBudget(),
                 request.getStrategy(),
                 request.getStartDate(),
